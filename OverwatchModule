@@ -1,0 +1,59 @@
+import java.awt.*;
+import java.awt.event.InputEvent;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.util.concurrent.ThreadLocalRandom;
+
+public class OverWatch extends main { // TODO - Write GUI.
+    int randomNumScore = ThreadLocalRandom.current().nextInt(1000, 4000 + 1);
+    boolean picRelease = false;
+    int score = randomNumScore;
+    int secondsAllowance = 0;
+    void screenShot() throws AWTException, InterruptedException {
+        while (!picRelease) { // Decs
+
+            boolean colorFound = false;
+
+
+            Robot droid = new Robot();
+            Rectangle screenArea1 = new Rectangle();
+            screenArea1.setBounds(705, 572, 70, 70);
+            BufferedImage screenCap = droid.createScreenCapture(screenArea1);
+            Color[] colorSet = new Color[4900];
+            for (int x = 0, totalPixels = 0; x < screenCap.getWidth(); x++) {
+                for (int y = 0; y < screenCap.getHeight(); y++) {
+                    int c = screenCap.getRGB(x, y);
+                    Color color = new Color(c);
+                    colorSet[totalPixels] = color;
+                    totalPixels++;
+                } // Counting and adding each pixel to a color set.
+            }
+
+            int colorCount = 0;
+            for (int i = 0; i < 4900; i++) { // Check each pixel for certain RGB values. This is a yellowish color.
+                if (colorSet[i].getRed() > 190 && colorSet[i].getGreen() > 190 && colorSet[i].getBlue() < 180 ) {
+                    colorCount++;
+                }
+                if (colorCount > 200) {
+                    colorFound = true;
+                }
+            }
+
+            if (colorFound) {
+                System.out.println("Healing found.");
+                int randomSeconds = ThreadLocalRandom.current().nextInt(0, 2 + 1);
+                score = score + 5;
+            } // Success function
+
+
+
+            if (score > 4000) { // Win condition.
+                System.out.println("You win, congrats!");
+                picRelease = true;
+            }
+            System.out.println("*************************************************");
+            System.out.println("Current score is " + score);
+            System.out.println("*************************************************"); // Score printout.
+        }
+    }
+}
